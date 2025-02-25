@@ -25,7 +25,7 @@ import { shufflePopulation } from "../../lib/shufflePopulation";
 */
 
 /**
- * Authors: 
+ * Authors: Allan Machogu
  * 
  * What we are simulating:
  * 
