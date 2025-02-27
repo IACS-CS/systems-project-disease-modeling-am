@@ -26,14 +26,22 @@ const renderPatients = (population) => {
   }
 
   function renderEmoji(p) {
+    if (p.quarantined) {
+      return "🏠"; // House for quarantined
+    }
+    if (p.immune) {
+      return "💉"; // Syringe for immune
+    }
     if (p.newlyInfected) {
       return "🤧"; // Sneezing Face for new cases
     } else if (p.infected) {
       return "🤢"; // Vomiting Face for already sick
+    } else if (p.roundsInfected > 4) {
+      return "🤒"; // Sick face for long-term infected
     } else {
       return "😀"; // Healthy person
     }
-  }
+  };
 
   function renderSubsetWarning() {
     if (amRenderingSubset) {

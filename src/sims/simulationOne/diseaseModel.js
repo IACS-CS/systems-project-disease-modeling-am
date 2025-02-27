@@ -67,10 +67,10 @@ export const createPopulation = (size = 1600) => {
       x: (100 * (i % sideSize)) / sideSize, // X-coordinate within 100 units
       y: (100 * Math.floor(i / sideSize)) / sideSize, // Y-coordinate scaled similarly
       roundsInfected: 0,
-      immmune: false,
-      quarantined: false,
+      immune: false,
       infected: false,
-      
+      quarantined: false,
+      newlyInfected: false,
     });
   }
   // Infect patient zero...
@@ -79,6 +79,16 @@ export const createPopulation = (size = 1600) => {
   patientZero.roundsInfected = 1;
   return population;
 };
+
+const maybeInfectPerson = (person, params) => {
+ // Only allow infection if the person is not quarantined
+ if (!person.quarantined && Math.random() * 100 < params.infectionChance) {
+    if (!person.infected) {
+      person.infected = true;
+      person.newlyInfected = true;
+    }
+  }
+}
 
 // Example: Maybe infect a person (students should customize this)
 const updateIndividual = (person, contact, params) => {
@@ -92,7 +102,13 @@ const updateIndividual = (person, contact, params) => {
     if (person.roundsInfected > 4) {
       person.quarantined = true;
     }
-    if (person.quarantined) {
+    //this round just adds to the rounds infected
+    // If they were quarantined for 2 rounds, they are no longer
+    // newly infected :)
+    if (person.quarantined && person.roundsInfected > 6) {
+      person.immune = true;
+      person.infected = false;
+      person.newlyInfected = false;
       person.roundsInfected = 0;
       person.quarantined = false;
     }
@@ -101,6 +117,7 @@ const updateIndividual = (person, contact, params) => {
     if (Math.random() * 100 < params.infectionChance) {
       if (!person.infected) {
         person.newlyInfected = true;
+        person.roundsInfected += 1;
       }
       person.infected = true;
     }
@@ -108,52 +125,42 @@ const updateIndividual = (person, contact, params) => {
 };
 
 // Example: Update population (students decide what happens each turn)
-export const updatePopulation = (population, round, params) => {
-  // Include "shufflePopulation if you want to shuffle...
-  // population = shufflePopulation(population);
-  // Example logic... each person is in contact with the person next to them...
+export const updatePopulation = (population, params) => {
   for (let p of population) {
     p.newlyInfected = false;
   }
   const shuffledPopulation = shufflePopulation(population);
 
-  for (let i = 0; i < population.length; i+= 4) {
-    let p = population[i];
-    // This logic just grabs the next person in line -- you will want to 
-    // change this to fit your model! 
-    let contact = population[(i + 1) % population.length];
-    for (let i = 0; i < shuffledPopulation.length - 1; i += 2) {
-      let personA = shuffledPopulation[i];
-      let personB = shuffledPopulation[i + 1];
-  
-      // let's have them meet at person A's spot...        
-      // Check if we're at the edge...
-      if (personA.x < 1) {
-        personA.x += Math.ceil(Math.random() * 5)
-      }
-      if (personA.x > 99) {
-        personA.x -= Math.ceil(Math.random() * 5)
-      }
-      // Now move personA over slightly to make room
-      personA.x -= 1; // person A moves over...
-      // personB stands next to them :-)
-      personB.x = personA.x + 2; // person B moves over...
-      personB.y = personA.y;
-      // Keep track of partners for nudging...
-      personA.partner = personB;
-      personB.partner = personA;
-  
-      // Now let's see if they infect each other
-      if (personA.infected && !personB.infected) {
-        maybeInfectPerson(personB, params);
-      }
-      if (personB.infected && !personA.infected) {
-        maybeInfectPerson(personA, params);
-      }
+  for (let i = 0; i < shuffledPopulation.length; i += 2) {
+    let personA = shuffledPopulation[i];
+    let personB = shuffledPopulation[i + 1];
+
+    if (personA.x < 1) {
+      personA.x += Math.ceil(Math.random() * 5)
     }
-    // Update the individual based on the contact...
-    updateIndividual(p, contact, round, params);
+    if (personA.x > 99) {
+      personA.x -= Math.ceil(Math.random() * 5)
+    }
+
+    personA.x -= 1; 
+    personB.x = personA.x + 2; 
+    personB.y = personA.y;
+    
+    personA.partner = personB;
+    personB.partner = personA;
+
+    // Infection logic between person A and person B
+    if (personA.infected && !personB.infected) {
+      maybeInfectPerson(personB, params);
+    }
+    if (personB.infected && !personA.infected) {
+      maybeInfectPerson(personA, params);
+    }
+
+    // Update individuals
+    updateIndividual(personA, personB, params);
   }
+
   return population;
 };
 
@@ -173,13 +180,21 @@ export const trackedStats = [
 // Example: Compute stats (students customize)
 export const computeStatistics = (population, round) => {
   let infected = 0;
+  let immune = 0;
   let newlyInfected = 0;
+  let quarantined = 0;
   for (let p of population) {
     if (p.infected) {
       infected += 1; // Count the infected
     }
     if (p.newlyInfected) {
       newlyInfected += 1; // Count the newly infected
+    }
+    if (p.immune) {
+      immune += 1; // Count the immune
+    }
+    if (p.quarantined) {
+      quarantined += 1; // Count the quarantined
     }
   }
   return { round, infected, newlyInfected, immune, quarantined, population };
