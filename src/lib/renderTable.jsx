@@ -1,4 +1,5 @@
 export const renderTable = (diseaseData, trackedStats) => {
+  console.log('renderTable got ',diseaseData,trackedStats)
   return (
     <table>
       <thead>

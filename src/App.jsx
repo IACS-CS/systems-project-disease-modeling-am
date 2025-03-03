@@ -14,7 +14,7 @@ export const App = () => {
       component: Simulation,
     },
     {
-      name: "My Second Simulation (CHANGE NAME in APP.jsx)",
+      name: "The Modified Flu Simulation",
       component: Simulation2,
     },
   ];

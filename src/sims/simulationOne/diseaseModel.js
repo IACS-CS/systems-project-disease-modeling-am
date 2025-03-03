@@ -197,6 +197,6 @@ export const computeStatistics = (population, round) => {
       quarantined += 1; // Count the quarantined
     }
   }
-  return { round, infected, newlyInfected, immune, quarantined, population };
+  return { round, infected, newlyInfected, immune, quarantined, population: population.length};
 };
 

@@ -113,11 +113,11 @@ const Simulation = () => {
   return (
     <div>
       <section className="top">
-        <h1>My Custom Simulation</h1>
+        <h1> Handshake Simulation pt.2</h1>
         <p>
-          Edit <code>simulationOne/diseaseModel.js</code> to define how your
-          simulation works. This one should try to introduce *one* complicating
-          feature to the basic model.
+          This code <code>simulationOne/diseaseModel.js</code> is a modified version of the handshake virus.
+          A patient has the infection, and through the handshake, the virus is transmitted to another patient. 
+          This simulation then randomly groups pairs together, and after 4 rounds, the patient is quarantined for two rounds, then is immune.
         </p>
 
         <p>

@@ -23,10 +23,18 @@ const renderPatients = (population) => {
   }
 
   function renderEmoji(p) {
+    if (p.quarantined) {
+      return "🏠"; // House for quarantined
+    }
+    if (p.immune) {
+      return "💉"; // Syringe for immune
+    }
     if (p.newlyInfected) {
       return "🤧"; // Sneezing Face for new cases
     } else if (p.infected) {
       return "🤢"; // Vomiting Face for already sick
+    } else if (p.roundsInfected > 4) {
+      return "🤒"; // Sick face for long-term infected
     } else {
       return "😀"; // Healthy person
     }
@@ -102,11 +110,11 @@ const Simulation = () => {
   return (
     <div>
       <section className="top">
-        <h1>My Second Custom Simulation</h1>
+        <h1>The Flu Simulation</h1>
         <p>
-          Edit <code>simulationTwo/diseaseModel.js</code> to define how your
-          simulation works. This one should try to replicate features of a real
-          world illness and/or intervention.
+          This code <code>simulationTwo/diseaseModel.js</code> shows a sampled population that's infected by the influenza, or the flu, showing the incubation period of the patients as well as the quarantine period, which is 4 rounds. 
+          The newly infected patients are quarantined for 2 rounds, and if they are still infected after 6 rounds, they are immune. 
+          The infection chance is set to 50%.
         </p>
 
         <p>
@@ -121,6 +129,42 @@ const Simulation = () => {
 
         <div>
           {/* Add custom parameters here... */}
+          <label>
+            Incubation Period: 
+            <input
+            type="range"
+            min="1"
+            max="2"
+            value={simulationParameters.incubationPeriod[0]}
+            onChange={(e) =>
+              setSimulationParameters({
+                ...simulationParameters,
+                incubationPeriod: [
+                  parseInt(e.target.value),
+                  simulationParameters.incubationPeriod[1],
+                ],
+              })
+            }
+          />
+          {simulationParameters.incubationPeriod[0]} - {simulationParameters.incubationPeriod[1]} rounds
+            </label>
+          <label>
+            Infection Chance:
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={simulationParameters.infectionChance}
+              onChange={(e) =>
+                setSimulationParameters({
+                  ...simulationParameters,
+                  infectionChance: parseFloat(e.target.value),
+                })
+              }
+            />
+            {simulationParameters.infectionChance}%
+          </label>
           <label>
             Population:
             <div className="vertical-stack">
