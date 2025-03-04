@@ -118,8 +118,7 @@ const Simulation = () => {
         </p>
 
         <p>
-          Population: {population.length}. Infected:{" "}
-          {population.filter((p) => p.infected).length}
+          Population: {population.length}.
         </p>
 
         <button onClick={runTurn}>Next Turn</button>
