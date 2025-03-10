@@ -120,7 +120,7 @@ const Simulation = () => {
         <p>
           Population: {population.length}.
         </p>
-
+        <p>A bit of AI--Copilot and ChatGPT used</p>
         <button onClick={runTurn}>Next Turn</button>
         <button onClick={() => setAutoMode(true)}>AutoRun</button>
         <button onClick={() => setAutoMode(false)}>Stop</button>

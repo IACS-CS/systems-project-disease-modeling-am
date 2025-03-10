@@ -91,7 +91,7 @@ export const maybeInfectPerson = (person, params) => {
       person.infected = true;
       person.newlyInfected = true;
       person.incubationPeriod = Math.floor(
-        Math.random() *
+        Math.random() *  
           (params.incubationPeriod[1] - params.incubationPeriod[0] + 1) +
           params.incubationPeriod[0]
       );
