@@ -44,4 +44,3 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-//From another project/image editing project
